@@ -1,11 +1,11 @@
 <?php
 
-session_start();
-if (isset($_SESSION['pseudo'])) 
-{
-    header('location:http://localhost/projets/emploi/accueil.php');
-}else 
-{
+// session_start();
+// if (isset($_SESSION['pseudo'])) 
+// {
+//     // header('location:http://localhost/projets/gestion&20des&20notes/accueil.php');
+// }else 
+// {
     
 
 
@@ -40,9 +40,18 @@ if (isset($_SESSION['pseudo']))
             {
                 if (strlen($_POST['pseudo'])>=4) 
                 {
-                    
-                
                     $pseudo=htmlspecialchars($_POST['pseudo']);
+                    $req=$bdd->query('SELECT pseudo FROM etudiant ');
+                    while ($donnees=$req->fetch()) 
+                    {
+                       if ($donnees['pseudo']==$pseudo) 
+                       {
+                           $error='Le pseudo est dèja utilisé par un membre. <br>
+                           Veuillez choisir un autre ';
+                           exit();
+                       }
+                    }
+                   
                     setcookie('pseudo',$pseudo,time()+300, null, null, false, true);
                     if (isset($_POST['firstName']) && !empty($_POST['firstName']) )
                     {
@@ -57,6 +66,15 @@ if (isset($_SESSION['pseudo']))
                                     $email=htmlspecialchars($_POST["email"]);
                                     if (filter_var($email,FILTER_VALIDATE_EMAIL)) 
                                     {
+                                        $req=$bdd->query('SELECT email FROM etudiant ');
+                                        while ($donnees=$req->fetch()) 
+                                        {
+                                           if ($donnees['email']==$email) 
+                                           {
+                                               $error='L\'adresse mail est dèja utilisé par un membre.';
+                                               exit();
+                                           }
+                                        }
                                         setcookie('email',$email ,time()+300, null, null, false, true);
                                         if (isset($_POST['password']) && !empty($_POST['password']))
                                         {
@@ -71,15 +89,7 @@ if (isset($_SESSION['pseudo']))
                                                         $hash=password_hash($pass, PASSWORD_DEFAULT);
                                                         if(password_verify($repass, $hash))
                                                         {   
-                                                            $req=$bdd->query('SELECT pseudo FROM etudiant ');
-                                                             while ($donnees=$req->fetch()) 
-                                                             {
-                                                                if ($donnees['pseudo']==$pseudo) 
-                                                                {
-                                                                    $error='Le pseudo est dèja utilisé par un membre. <br>
-                                                                    Veuillez choisir un autre ';
-                                                                }
-                                                             }
+                                                           
                                                             $ajout=$bdd->prepare('INSERT INTO etudiant(pseudo,firstName,lastName,email,password) VALUES(?,?,?,?,?)'); 
                                                             // $ajout->bindValue($pseudo,PDO::PARAM_STR);
                                                             // $ajout->bindValue($firstName,PDO::PARAM_STR);
@@ -92,7 +102,7 @@ if (isset($_SESSION['pseudo']))
                                                             $_SESSION['firstName']=$firstName;
                                                             $_SESSION['lastName']=$lastName;
                                                             $_SESSION['nouveau']=true;
-                                                            header('location:http://localhost/projets/emploi/accueil.php');
+                                                            header('location:http://localhost/projets/gestion&20des&20notes/accueil.php');
                                                         }else
                                                         {
                                                             $error='les mots de passe doivent etre identiques';
@@ -150,8 +160,8 @@ if (isset($_SESSION['pseudo']))
              
              
            }
-       }
-    }
+     }
+    //}
        ?>
         <div class="container">
         
@@ -204,7 +214,7 @@ if (isset($_SESSION['pseudo']))
    </form>
     </div>
 </body>
-<?php}?>
+<?php//}?>
 
     
   

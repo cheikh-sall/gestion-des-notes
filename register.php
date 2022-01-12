@@ -21,7 +21,7 @@ if (isset($_SESSION['pseudo']))
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
     <link rel='stylesheet' type='text/css' href='style.css'>
     <script src='main.js'></script>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" >
 </head>
 <body>
     <?php
@@ -80,8 +80,13 @@ if (isset($_SESSION['pseudo']))
                                                                     Veuillez choisir un autre ';
                                                                 }
                                                              }
-                                                            $ajout=$bdd->prepare('INSERT INTO etudiant(pseudo,firstName,lastName,email,password) VALUES(?,?,?,?,?)');
-                                                            $ajout->execute($pseudo,$firstName,$lastName,$email,$password) || die('nous n\'avons pas pu vous inscrire');
+                                                            $ajout=$bdd->prepare('INSERT INTO etudiant(pseudo,firstName,lastName,email,password) VALUES(?,?,?,?,?)'); 
+                                                            $ajout->bindValue($pseudo,PDO::PARAM_STR);
+                                                            $ajout->bindValue($firstName,PDO::PARAM_STR);
+                                                            $ajout->bindvalue($lastName,PDO::PARAM_STR);
+                                                            $ajout->bindvalue($email,PDO::PARAM_STR);
+                                                            $ajout->bindvalue($hash,PDO::PARAM_STR);
+                                                            $ajout->execute() || die('nous n\'avons pas pu vous inscrire');
                                                             $_SESSION['pseudo']=$pseudo;
                                                             $_SESSION['firstName']=$firstName;
                                                             $_SESSION['lastName']=$lastName;
@@ -141,20 +146,20 @@ if (isset($_SESSION['pseudo']))
            }else
            {
              $error='le pseudo est obligatoire, veuillez le renseigner svp!';
-             echo "<p>".$error."</p>";
+             
              
            }
        }
     }
        ?>
         <div class="container">
+        
         <form method="post" action="">
-
-                <div id="heading">
-                    <p>Inscription</p>
-                    <fieldset class="alert alert danger"><?php
-                    if (isset($_GET["error"])) 
+        <div class="alert alert-danger" role="alert"><?php
+                    if (isset($_POST['valider'])) 
                     {
+                        if ($error) 
+                           
                         
                            echo "<p>".$error."</p>";
                             
@@ -162,20 +167,25 @@ if (isset($_SESSION['pseudo']))
                     }
                     
                     
-                    ?></fieldset>
+                    ?></div>
+
+                <div id="heading">
+               
+                    <p>Inscription</p>
+                    
                 </div>
                   <div id="content">
                     
-                <label for="pseudo">Pseudo</label><br><input type="text" name="pseudo" placeholder="Entrez votre pseudo" <?php if (isset($_COOKIES['pseudo'])):echo "value=".$pseudo; ?>
+                <label for="pseudo">Pseudo</label><br><input type="text" name="pseudo" placeholder="Entrez votre pseudo" <?php if (isset($_COOKIES['pseudo'])):echo "value=".$_COOKIES['pseudo']; ?>
                     
                     <?php endif ?> ></input>
-                <label for="firstName">Prénom</label><br><input type="text"placeholder="Entrer votre  prénom" id="firstName" name="firstName" <?php if (isset($_COOKIES['firstName'])):echo "value=".$firstName; ?>
+                <label for="firstName">Prénom</label><br><input type="text"placeholder="Entrer votre  prénom" id="firstName" name="firstName" <?php if (isset($_COOKIES['firstName'])):echo "value=".$_COOKIES['firstName']; ?>
                     
                     <?php endif ?> ></input><br>
-                <label for="lastName">Nom</label><br><input type="text"placeholder="Entrer votre  prénom" id="firstName" name="firstName" <?php if (isset($_COOKIES['lastName'])):echo "value=".$lastName; ?>
+                <label for="lastName">Nom</label><br><input type="text"placeholder="Entrer votre  nom" id="lastName" name="lastName" <?php if (isset($_COOKIES['lastName'])):echo "value=".$_COOKIES['lastName']; ?>
                     
                     <?php endif ?>  ></input><br>
-                 <label for="email">Email</label><br><input type="email"placeholder="Entrer votre adresse mail" id="email" name="email" <?php if (isset($_COOKIES['email'])):echo "value=".$email; ?>
+                 <label for="email">Email</label><br><input type="email"placeholder="Entrer votre adresse mail" id="email" name="email" <?php if (isset($_COOKIES['email'])):echo "value=".$_COOKIES['email']; ?>
                     
                     <?php endif ?>  ></input><br>
                  <label for="password">Mot de passe</label><br><input type="password"placeholder="Entrer votre mot de passe" id="password" name="password"   ></input>
@@ -188,13 +198,13 @@ if (isset($_SESSION['pseudo']))
 
                      <button id="valider" name="valider">S'inscrire</button>
                     
+                    
                 </div>
    </form>
     </div>
 </body>
 <?php}?>
 
-    //    include "inc/footer.php";
     
   
    

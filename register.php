@@ -81,12 +81,13 @@ if (isset($_SESSION['pseudo']))
                                                                 }
                                                              }
                                                             $ajout=$bdd->prepare('INSERT INTO etudiant(pseudo,firstName,lastName,email,password) VALUES(?,?,?,?,?)'); 
-                                                            $ajout->bindValue($pseudo,PDO::PARAM_STR);
-                                                            $ajout->bindValue($firstName,PDO::PARAM_STR);
-                                                            $ajout->bindvalue($lastName,PDO::PARAM_STR);
-                                                            $ajout->bindvalue($email,PDO::PARAM_STR);
-                                                            $ajout->bindvalue($hash,PDO::PARAM_STR);
-                                                            $ajout->execute() || die('nous n\'avons pas pu vous inscrire');
+                                                            // $ajout->bindValue($pseudo,PDO::PARAM_STR);
+                                                            // $ajout->bindValue($firstName,PDO::PARAM_STR);
+                                                            // $ajout->bindvalue($lastName,PDO::PARAM_STR);
+                                                            // $ajout->bindvalue($email,PDO::PARAM_STR);
+                                                            // $ajout->bindvalue($hash,PDO::PARAM_STR);
+                                                            $elements=array($pseudo,$firstName,$lastName,$email,$hash);
+                                                            $ajout->execute($elements) || die('nous n\'avons pas pu vous inscrire');
                                                             $_SESSION['pseudo']=$pseudo;
                                                             $_SESSION['firstName']=$firstName;
                                                             $_SESSION['lastName']=$lastName;
